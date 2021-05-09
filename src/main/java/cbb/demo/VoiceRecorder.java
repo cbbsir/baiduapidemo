@@ -1,8 +1,8 @@
 package cbb.demo;
 
-import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+//import com.pi4j.io.gpio.*;
+//import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+//import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -17,67 +17,58 @@ public class VoiceRecorder {
     static AudioFormat audioFormat;
     static TargetDataLine targetDataLine;
 
-    private static final GpioController gpioController = GpioFactory.getInstance();
-    private static final GpioPinDigitalInput myButton = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
+//    private static final GpioController gpioController = GpioFactory.getInstance();
+//    private static final GpioPinDigitalInput myButton = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
 
-    static int i=1;
+//    static int i=1;
 
-    public static void main(String[] args) {
-        while (i < 20){
-            System.out.println("y开始n结束");
-            Scanner input = new Scanner(System.in);
-            String Sinput = input.next();
-            long testtime = System.currentTimeMillis();
-            if(Sinput.equals("y")){
-                captureAudio();// 调用录音方法
-            }
-            Scanner input_2 = new Scanner(System.in);
-            String Sinput_2 = input_2.next();
-            if(Sinput_2.equals("n")){
-                closeCaptureAudio();
-            }
-            System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
-            System.out.println("i = " + i);
-            i++;
-        }
-    }
-
-    public void voiceRecorderInConsole() {
-//        System.out.println("y开始n结束");
-//        Scanner input = new Scanner(System.in);
-//        String Sinput = input.next();
-//        long testtime = System.currentTimeMillis();
-//        if(Sinput.equals("y")){
-//            captureAudio();// 调用录音方法
-//        }
-//        Scanner input_2 = new Scanner(System.in);
-//        String Sinput_2 = input_2.next();
-//        if(Sinput_2.equals("n")){
-//            closeCaptureAudio();
-//        }
-//        System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
-
-
-//        System.out.println("按下按钮开始录音，松开按键结束录音：");
-//        GpioController gpio = PiUtils.getGpioController();
-//        GpioPinDigitalOutput pin = PiUtils.getGpioPinDigitalInput();
-//        long testtime = System.currentTimeMillis();
-//        while (true){
-//            if (pin.isLow()){
+//    public static void main(String[] args) {
+//        while (i < 20){
+//            System.out.println("y开始n结束");
+//            Scanner input = new Scanner(System.in);
+//            String Sinput = input.next();
+//            long testtime = System.currentTimeMillis();
+//            if(Sinput.equals("y")){
 //                captureAudio();// 调用录音方法
 //            }
-//            if (pin.isHigh()){
+//            Scanner input_2 = new Scanner(System.in);
+//            String Sinput_2 = input_2.next();
+//            if(Sinput_2.equals("n")){
 //                closeCaptureAudio();
 //            }
 //            System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
+//            System.out.println("i = " + i);
+//            i++;
 //        }
+//    }
+
+    public void voiceRecorderInConsole() {
+        System.out.println("y开始n结束");
+        Scanner input = new Scanner(System.in);
+        String Sinput = input.next();
+        long testtime = System.currentTimeMillis();
+        if(Sinput.equals("y")){
+            captureAudio();// 调用录音方法
+        }
+        Scanner input_2 = new Scanner(System.in);
+        String Sinput_2 = input_2.next();
+        if(Sinput_2.equals("n")){
+            closeCaptureAudio();
+        }
+        System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
+
+
 //        System.out.println("按下按钮开始录音，松开按键结束录音：");
 //        myButton.addListener(new GpioPinListenerDigital() {
+//            @Override
 //            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-//                while (event.getState().isHigh()){
-//                    captureAudio();// 调用录音方法
-//                    if (event.getState().isLow()){
-//                        closeCaptureAudio();
+//                while (true){
+//                    if (event.getState().isHigh()){
+//                        captureAudio();// 调用录音方法
+//                        if (event.getState().isLow()){
+//                            closeCaptureAudio();
+//                            break;
+//                        }
 //                    }
 //                }
 //
@@ -115,7 +106,7 @@ public class VoiceRecorder {
 
     private static AudioFormat getAudioFormat() {
         // 8000,11025,16000,22050,44100 采样率
-        float sampleRate = 44100F;
+        float sampleRate = 16000F;
         // 8,16 每个样本中的位数
         int sampleSizeInBits = 16;
         // 1,2 信道数（单声道为 1，立体声为 2，等等）
@@ -136,7 +127,7 @@ public class VoiceRecorder {
             // 设置文件类型和文件扩展名
             File audioFile = null;
             fileType = AudioFileFormat.Type.WAVE;
-            audioFile = new File("record"+ i + ".wav");
+            audioFile = new File("record.wav");
             try {
                 // format - 所需音频格式
                 targetDataLine.open(audioFormat);

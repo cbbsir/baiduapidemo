@@ -7,8 +7,8 @@ import com.pi4j.io.gpio.*;
  * @date 2021/5/5
  */
 public class PiUtils {
-    private static final GpioController gpioController = GpioFactory.getInstance();
-    private static final GpioPinDigitalInput myButton = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_UP);
+    private final GpioController gpioController = GpioFactory.getInstance();
+    private final GpioPinDigitalInput myButton = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_UP);
 
     public GpioController getGpioController() {
         return gpioController;
