@@ -1,4 +1,4 @@
-package cbb.demo;
+package cbb.demo.utils;
 
 //import com.pi4j.io.gpio.*;
 //import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
@@ -11,6 +11,7 @@ import java.util.Scanner;
 /**
  * @author cbb
  * @date 2021/3/21
+ * 录音工具类
  */
 public class VoiceRecorder {
 

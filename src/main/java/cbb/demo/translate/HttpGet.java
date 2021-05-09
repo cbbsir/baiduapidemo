@@ -1,4 +1,4 @@
-package cbb.demo;
+package cbb.demo.translate;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -15,8 +15,14 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
-class HttpGet {
-    protected static final int SOCKET_TIMEOUT = 10000; // 10S
+/**
+ * GET请求
+ */
+public class HttpGet {
+    /**
+     * 10 S
+     */
+    protected static final int SOCKET_TIMEOUT = 10000;
     protected static final String GET = "GET";
 
     public static String get(String host, Map<String, String> params) {
@@ -29,13 +35,15 @@ class HttpGet {
 
             // System.out.println("URL:" + sendUrl);
 
-            URL uri = new URL(sendUrl); // 创建URL对象
+            // 创建URL对象
+            URL uri = new URL(sendUrl);
             HttpURLConnection conn = (HttpURLConnection) uri.openConnection();
             if (conn instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) conn).setSSLSocketFactory(sslcontext.getSocketFactory());
             }
 
-            conn.setConnectTimeout(SOCKET_TIMEOUT); // 设置相应超时
+            // 设置相应超时
+            conn.setConnectTimeout(SOCKET_TIMEOUT);
             conn.setRequestMethod(GET);
             int statusCode = conn.getResponseCode();
             if (statusCode != HttpURLConnection.HTTP_OK) {
@@ -53,8 +61,10 @@ class HttpGet {
 
             String text = builder.toString();
 
-            close(br); // 关闭数据流
-            close(is); // 关闭数据流
+            // 关闭数据流
+            close(br);
+            // 关闭数据流
+            close(is);
             conn.disconnect(); // 断开连接
 
             return text;
@@ -86,7 +96,8 @@ class HttpGet {
         int i = 0;
         for (String key : params.keySet()) {
             String value = params.get(key);
-            if (value == null) { // 过滤空的key
+            // 过滤空的key
+            if (value == null) {
                 continue;
             }
 

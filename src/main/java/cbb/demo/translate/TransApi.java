@@ -1,9 +1,13 @@
-package cbb.demo;
+package cbb.demo.translate;
+
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 翻译API
+ */
 public class TransApi {
     private static final String TRANS_API_HOST = "http://api.fanyi.baidu.com/api/trans/vip/translate";
 
@@ -33,7 +37,8 @@ public class TransApi {
         params.put("salt", salt);
 
         // 签名
-        String src = appid + query + salt + securityKey; // 加密前的原文
+        // 加密前的原文
+        String src = appid + query + salt + securityKey;
         params.put("sign", MD5.md5(src));
 
         return params;

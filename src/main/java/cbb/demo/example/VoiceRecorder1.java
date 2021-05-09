@@ -1,4 +1,4 @@
-package cbb.demo;
+package cbb.demo.example;
 
 import javax.sound.sampled.*;
 import java.io.File;

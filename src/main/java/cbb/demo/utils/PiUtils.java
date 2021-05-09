@@ -1,10 +1,11 @@
-package cbb.demo;
+package cbb.demo.utils;
 
 import com.pi4j.io.gpio.*;
 
 /**
  * @author cbb
  * @date 2021/5/5
+ * 树莓派引脚工具类
  */
 public class PiUtils {
     private final GpioController gpioController = GpioFactory.getInstance();

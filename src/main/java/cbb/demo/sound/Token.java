@@ -1,7 +1,6 @@
-package cbb.demo;
+package cbb.demo.sound;
 
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,9 +12,15 @@ import java.net.URL;
  * @author cbb
  * @date 2021/5/5
  */
+
+/**
+ * 获取token、上传音频文件
+ */
 public class Token {
 
+    //token
     private String token = "";
+    //音频文件路径
     private String path = System.getProperty("user.dir") + "/record.wav";
 
     public void setToken(String token) {

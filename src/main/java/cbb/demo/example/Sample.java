@@ -1,4 +1,4 @@
-package cbb.demo;
+package cbb.demo.example;
 import com.baidu.aip.speech.AipSpeech;
 import org.json.JSONObject;
 

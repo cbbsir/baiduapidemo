@@ -1,9 +1,8 @@
-import cbb.demo.TransApi;
+import cbb.demo.translate.TransApi;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 public class Main {
 
