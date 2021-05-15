@@ -4,6 +4,10 @@ package cbb.demo.utils;
 //import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 //import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
+import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+
 import javax.sound.sampled.*;
 import java.io.File;
 import java.util.Scanner;
@@ -15,13 +19,18 @@ import java.util.Scanner;
  */
 public class VoiceRecorder {
 
-    static AudioFormat audioFormat;
+    private static AudioFormat audioFormat;
     static TargetDataLine targetDataLine;
 
-//    private static final GpioController gpioController = GpioFactory.getInstance();
-//    private static final GpioPinDigitalInput myButton = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
+    private static final GpioController gpioController = GpioFactory.getInstance();
+    private static final GpioPinDigitalInput myButton = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
 
-//    static int i=1;
+    //第一次按下录音，第二次结束录音
+    private static int mark = 0;
+
+    //为true表示在录音
+    boolean first = false;
+
 
 //    public static void main(String[] args) {
 //        while (i < 20){
@@ -44,40 +53,40 @@ public class VoiceRecorder {
 //    }
 
     public void voiceRecorderInConsole() {
-        System.out.println("y开始n结束");
-        Scanner input = new Scanner(System.in);
-        String Sinput = input.next();
-        long testtime = System.currentTimeMillis();
-        if(Sinput.equals("y")){
-            captureAudio();// 调用录音方法
-        }
-        Scanner input_2 = new Scanner(System.in);
-        String Sinput_2 = input_2.next();
-        if(Sinput_2.equals("n")){
-            closeCaptureAudio();
-        }
-        System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
+//        System.out.println("y开始n结束");
+//        Scanner input = new Scanner(System.in);
+//        String Sinput = input.next();
+//        long testtime = System.currentTimeMillis();
+//        if(Sinput.equals("y")){
+//            captureAudio();// 调用录音方法
+//        }
+//        Scanner input_2 = new Scanner(System.in);
+//        String Sinput_2 = input_2.next();
+//        if(Sinput_2.equals("n")){
+//            closeCaptureAudio();
+//        }
+//        System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
 
+        System.out.println("按下按键开始录音，再次按下按键结束录音：");
+        myButton.addListener(new GpioPinListenerDigital() {
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 
-//        System.out.println("按下按钮开始录音，松开按键结束录音：");
-//        myButton.addListener(new GpioPinListenerDigital() {
-//            @Override
-//            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-//                while (true){
-//                    if (event.getState().isHigh()){
-//                        captureAudio();// 调用录音方法
-//                        if (event.getState().isLow()){
-//                            closeCaptureAudio();
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//            }
-//        });
+                //按下录音
+                if (event.getState().isLow()){
+                    System.out.println("开始录音,录音中...");
+                    // 调用录音方法
+                    captureAudio();
+                }
 
+                //松开结束录音
+                if (event.getState().isHigh()){
+                    closeCaptureAudio();
+                    System.out.println("录音结束...");
+                }
 
-
+            }
+        });
 
     }
 
@@ -128,7 +137,7 @@ public class VoiceRecorder {
             // 设置文件类型和文件扩展名
             File audioFile = null;
             fileType = AudioFileFormat.Type.WAVE;
-            audioFile = new File("record.wav");
+            audioFile = new File("recordtest.wav");
             try {
                 // format - 所需音频格式
                 targetDataLine.open(audioFormat);
