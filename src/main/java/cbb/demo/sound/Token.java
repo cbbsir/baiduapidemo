@@ -21,18 +21,14 @@ public class Token {
     //token
     private String token = "";
     //音频文件路径
-    private String path = System.getProperty("user.dir") + "/record.wav";
+    private static String path = System.getProperty("user.dir") + "/record.wav";
 
     public void setToken(String token) {
         this.token = token;
     }
 
-    public String getPath() {
+    public static String getPath() {
         return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     //获取access_token

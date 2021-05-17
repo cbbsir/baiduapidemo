@@ -4,13 +4,23 @@ package cbb.demo.utils;
 //import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 //import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
+import cbb.demo.sound.Token;
+import cbb.demo.translate.TransApi;
+import com.alibaba.fastjson.JSON;
+import com.baidu.aip.speech.AipSpeech;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import org.json.JSONObject;
 
 import javax.sound.sampled.*;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+
+import static cbb.demo.sound.TokenParam.*;
 
 /**
  * @author cbb
@@ -20,16 +30,11 @@ import java.util.Scanner;
 public class VoiceRecorder {
 
     private static AudioFormat audioFormat;
-    static TargetDataLine targetDataLine;
+    private static TargetDataLine targetDataLine;
 
     private static final GpioController gpioController = GpioFactory.getInstance();
     private static final GpioPinDigitalInput myButton = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
 
-    //第一次按下录音，第二次结束录音
-    private static int mark = 0;
-
-    //为true表示在录音
-    boolean first = false;
 
 
 //    public static void main(String[] args) {
@@ -67,7 +72,7 @@ public class VoiceRecorder {
 //        }
 //        System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
 
-        System.out.println("按下按键开始录音，再次按下按键结束录音：");
+        System.out.println("按下按键开始录音，松开按键结束录音：");
         myButton.addListener(new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
@@ -83,11 +88,42 @@ public class VoiceRecorder {
                 if (event.getState().isHigh()){
                     closeCaptureAudio();
                     System.out.println("录音结束...");
-                }
 
+                    // 初始化一个AipSpeech
+                    AipSpeech client = new AipSpeech(VIDEO_APP_ID, VIDEO_API_KEY, VEDIO_SECRET_KEY);
+
+                    // 可选：设置网络连接参数
+                    client.setConnectionTimeoutInMillis(2000);
+                    client.setSocketTimeoutInMillis(60000);
+
+                    // 也可以直接通过jvm启动参数设置此环境变量
+                    //        System.setProperty("aip.log4j.conf", "log4j.properties");
+
+                    Map<String,Object> hashMap = new HashMap<String,Object>();
+                    // 设置音频转换语言类型 1737 英文
+                    hashMap.put("dev_pid",1737);
+
+                    //语音转文字 通用的 HTTP 接口。 上传完整录音文件，录音文件时长不超过60s。
+                    JSONObject res = client.asr(Token.getPath(), "wav", 16000, (HashMap<String, Object>) hashMap);
+                    //取json中需要的内容
+                    String english = res.getJSONArray("result").get(0).toString();
+                    System.out.println("english: " + english);
+
+                    //调用翻译接口 英文转中文
+                    TransApi api = new TransApi(TRANSLATE_APP_ID, TRANSLATE_SECURITY_KEY);
+                    String result = null;
+                    try {
+                        result = api.getTransResult(english, "en", "zh");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(result);
+                    //取json中需要的内容
+                    String chinese = JSON.parseObject(jsonObject.getJSONArray("trans_result").get(0).toString()).get("dst").toString();
+                    System.out.println("chinese: " + chinese + "\n");
+                }
             }
         });
-
     }
 
     public static void closeCaptureAudio(){
@@ -137,7 +173,7 @@ public class VoiceRecorder {
             // 设置文件类型和文件扩展名
             File audioFile = null;
             fileType = AudioFileFormat.Type.WAVE;
-            audioFile = new File("recordtest.wav");
+            audioFile = new File("record.wav");
             try {
                 // format - 所需音频格式
                 targetDataLine.open(audioFormat);

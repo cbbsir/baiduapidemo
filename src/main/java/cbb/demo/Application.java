@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.baidu.aip.speech.AipSpeech;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import static cbb.demo.sound.TokenParam.*;
@@ -27,15 +28,14 @@ public class Application {
 
         Thread.sleep(1000*5);
 
-        // 初始化一个AipSpeech
+        
+
+        /*// 初始化一个AipSpeech
         AipSpeech client = new AipSpeech(VIDEO_APP_ID, VIDEO_API_KEY, VEDIO_SECRET_KEY);
 
         // 可选：设置网络连接参数
         client.setConnectionTimeoutInMillis(2000);
         client.setSocketTimeoutInMillis(60000);
-
-        // 也可以直接通过jvm启动参数设置此环境变量
-        //        System.setProperty("aip.log4j.conf", "log4j.properties");
 
         Map<String,Object> hashMap = new HashMap<String,Object>();
         // 设置音频转换语言类型 1737 英文
@@ -53,9 +53,9 @@ public class Application {
         com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(result);
         //取json中需要的内容
         String chinese = JSON.parseObject(jsonObject.getJSONArray("trans_result").get(0).toString()).get("dst").toString();
-        System.out.println("chinese: " + chinese);
+        System.out.println("chinese: " + chinese);*/
 
-        /*        while (true){
+        /*while (true){
             File file = new File(token.getPath());
             if(file.exists()){
                 // 音频文件存在
