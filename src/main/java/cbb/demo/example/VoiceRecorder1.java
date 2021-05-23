@@ -36,19 +36,19 @@ public class VoiceRecorder1 {
     }
 
     public void voiceRecorderInConsole() {
-//        System.out.println("y开始n结束");
-//        Scanner input = new Scanner(System.in);
-//        String Sinput = input.next();
-//        long testtime = System.currentTimeMillis();
-//        if(Sinput.equals("y")){
-//            captureAudio();// 调用录音方法
-//        }
-//        Scanner input_2 = new Scanner(System.in);
-//        String Sinput_2 = input_2.next();
-//        if(Sinput_2.equals("n")){
-//            closeCaptureAudio();
-//        }
-//        System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
+        System.out.println("y开始n结束");
+        Scanner input = new Scanner(System.in);
+        String Sinput = input.next();
+        long testtime = System.currentTimeMillis();
+        if(Sinput.equals("y")){
+            captureAudio();// 调用录音方法
+        }
+        Scanner input_2 = new Scanner(System.in);
+        String Sinput_2 = input_2.next();
+        if(Sinput_2.equals("n")){
+            closeCaptureAudio();
+        }
+        System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
 
 
 //        System.out.println("按下按钮开始录音，松开按键结束录音：");

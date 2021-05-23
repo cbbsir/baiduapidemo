@@ -35,7 +35,7 @@ public class VoiceRecorder {
     private static final GpioController gpioController = GpioFactory.getInstance();
     private static final GpioPinDigitalInput myButton = gpioController.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
 
-
+    int type = 0;
 
 //    public static void main(String[] args) {
 //        while (i < 20){
@@ -57,7 +57,7 @@ public class VoiceRecorder {
 //        }
 //    }
 
-    public void voiceRecorderInConsole() {
+    public void voiceRecorderInConsole(final int type) {
 //        System.out.println("y开始n结束");
 //        Scanner input = new Scanner(System.in);
 //        String Sinput = input.next();
@@ -72,8 +72,34 @@ public class VoiceRecorder {
 //        }
 //        System.out.println("录音了"+(System.currentTimeMillis()-testtime)/1000+"秒！");
 
+        final Map<String,Object> hashMap = new HashMap<String,Object>();
+
+        switch (type){
+            case 1:
+                //普通话
+                hashMap.put("dev_pid",1537);
+                break;
+            case 2:
+                //英文
+                hashMap.put("dev_pid",1737);
+                break;
+            case 3:
+                //粤语
+                hashMap.put("dev_pid",1637);
+                break;
+            case 4:
+                //四川话
+                hashMap.put("dev_pid",1837);
+                break;
+            default:
+                //默认为普通话转文本
+                break;
+
+        }
+
         System.out.println("按下按键开始录音，松开按键结束录音：");
         myButton.addListener(new GpioPinListenerDigital() {
+
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 
@@ -99,28 +125,35 @@ public class VoiceRecorder {
                     // 也可以直接通过jvm启动参数设置此环境变量
                     //        System.setProperty("aip.log4j.conf", "log4j.properties");
 
-                    Map<String,Object> hashMap = new HashMap<String,Object>();
+
                     // 设置音频转换语言类型 1737 英文
-                    hashMap.put("dev_pid",1737);
+//                    hashMap.put("dev_pid",1737);
 
                     //语音转文字 通用的 HTTP 接口。 上传完整录音文件，录音文件时长不超过60s。
                     JSONObject res = client.asr(Token.getPath(), "wav", 16000, (HashMap<String, Object>) hashMap);
                     //取json中需要的内容
-                    String english = res.getJSONArray("result").get(0).toString();
-                    System.out.println("english: " + english);
+                    String text = res.getJSONArray("result").get(0).toString();
+//                    String text = res.toString();
 
-                    //调用翻译接口 英文转中文
-                    TransApi api = new TransApi(TRANSLATE_APP_ID, TRANSLATE_SECURITY_KEY);
-                    String result = null;
-                    try {
-                        result = api.getTransResult(english, "en", "zh");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                    //英汉翻译
+                    if (type == 2){
+                        System.out.println("english: " + text);
+                        //调用翻译接口 英文转中文
+                        TransApi api = new TransApi(TRANSLATE_APP_ID, TRANSLATE_SECURITY_KEY);
+                        String result = null;
+                        try {
+                            result = api.getTransResult(text, "en", "zh");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(result);
+                        //取json中需要的内容
+                        String chinese = JSON.parseObject(jsonObject.getJSONArray("trans_result").get(0).toString()).get("dst").toString();
+                        System.out.println("翻译结果: " + chinese + "\n");
+                    }else  {
+                        System.out.println("识别结果: " + text);
                     }
-                    com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(result);
-                    //取json中需要的内容
-                    String chinese = JSON.parseObject(jsonObject.getJSONArray("trans_result").get(0).toString()).get("dst").toString();
-                    System.out.println("chinese: " + chinese + "\n");
+
                 }
             }
         });

@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
 import static cbb.demo.sound.TokenParam.*;
 
 /**
@@ -22,9 +24,19 @@ public class Application {
         Token token = new Token();
         token.getToken();
 
-        //录音
+        //录音、翻译
         VoiceRecorder voiceRecorder = new VoiceRecorder();
-        voiceRecorder.voiceRecorderInConsole();
+
+        System.out.println("**********************************************************");
+
+        System.out.println("1.普通话转文字  2.英汉翻译  3.粤语转文字  4.四川话转文字  ");
+
+        System.out.println("**********************************************************");
+
+        Scanner scanner = new Scanner(System.in);
+        int type = scanner.nextInt();
+
+        voiceRecorder.voiceRecorderInConsole(type);
 
         Thread.sleep(1000*5);
 
